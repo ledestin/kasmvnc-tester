@@ -1,5 +1,16 @@
 #!/usr/bin/python3
 
+def detect_test_image():
+  if os.environ.get('TEST_IMAGE') is not None:
+    return os.environ['TEST_IMAGE']
+
+  return "kasmweb/ubuntu-focal-desktop:develop"
+
+def find_container_for_image(image):
+  for container in docker_client.containers.list():
+    if container.attrs['Config']['Image'] == image:
+        return container
+
 import os
 
 global report_status
@@ -8,18 +19,10 @@ global docker_client
 report_tests = []
 report_status = 'PASS'
 
-if os.environ.get('TEST_IMAGE') is not None:
-  TEST_IMAGE = os.environ['TEST_IMAGE']
-else:
-  TEST_IMAGE = "kasmweb/ubuntu-focal-desktop:develop"
+TEST_IMAGE = detect_test_image
 
 import docker
 docker_client = docker.from_env()
-
-def find_container_for_image(image):
-  for container in docker_client.containers.list():
-    if container.attrs['Config']['Image'] == image:
-        return container
 
 test_container = find_container_for_image(TEST_IMAGE)
 try:
