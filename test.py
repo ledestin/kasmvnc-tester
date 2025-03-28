@@ -4,6 +4,7 @@ import os
 
 global report_status
 global report_tests
+global docker_client
 report_tests = []
 report_status = 'PASS'
 
@@ -13,16 +14,18 @@ else:
   TEST_IMAGE = "kasmweb/ubuntu-focal-desktop:develop"
 
 import docker
-dockerClient = docker.from_env()
+docker_client = docker.from_env()
 
-for container in dockerClient.containers.list():
-  if container.attrs['Config']['Image'] == TEST_IMAGE:
-    testContainer = container
+def find_container_for_image(image):
+  for container in docker_client.containers.list():
+    if container.attrs['Config']['Image'] == image:
+        return container
 
+test_container = find_container_for_image(TEST_IMAGE)
 try:
   # Detect the xfce-session pid
-  checkXfce = '/bin/bash -c "pgrep xfce4-session"'
-  xfce = testContainer.exec_run(checkXfce)
+  check_xfce = '/bin/bash -c "pgrep xfce4-session"'
+  xfce = test_container.exec_run(check_xfce)
   if xfce[0] == 0:
     pids = xfce[1].decode("utf-8")
     report_tests.append({'testname':'XFCE Running','status':'pass','errorout': 'XFCE is running pid ' + pids})
