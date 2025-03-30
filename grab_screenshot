@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+
+from selenium import webdriver
+
+## Webdriver setup ##
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = '/usr/bin/chromium-wrapped'
+# docker flags
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-dev-shm-usage")
+# no ssl errors
+chrome_options.add_argument('--ignore-certificate-errors')
+# allow automatic file download and clear all perms
+chrome_options.add_experimental_option("prefs", {
+  "download.default_directory": "/config/Downloads",
+  "download.prompt_for_download": False,
+  "download.directory_upgrade": True,
+  "safebrowsing_for_trusted_sources_enabled": False,
+  "safebrowsing.enabled": False,
+  "profile.default_content_setting_values.media_stream_mic": 1,
+  "profile.default_content_setting_values.media_stream_camera": 1,
+  "profile.default_content_setting_values.geolocation": 1,
+  "profile.default_content_setting_values.notifications": 1
+})
+# enable fake microphone
+chrome_options.add_argument('--use-fake-device-for-media-stream')
+chrome_options.add_argument('--use-fake-ui-for-media-stream')
+# enable fake webcam
+chrome_options.add_argument("--use-fake-ui-for-media-stream")
+chrome_options.add_argument("--use-fake-device-for-media-stream")
+
+chrome_options.add_argument("--incognito")  # Use incognito mode to avoid conflicts
+
+# options and timeouts
+driver = webdriver.Chrome(options=chrome_options)
+driver.set_page_load_timeout(60)
+driver.implicitly_wait(15)
+# Initial login
+KASM_HOST = 'localhost'
+KASM_PORT = '6901'
+driver.get("https://" + KASM_HOST + ":" + KASM_PORT)
+driver.set_window_size(1920, 1080)
+
+driver.get_screenshot_as_file(outdir + 'filter_setup.png')
