@@ -1,40 +1,27 @@
 #!/usr/bin/python3
 
 from selenium import webdriver
-import requests
-from requests.auth import HTTPBasicAuth
-import urllib3
 
 # Define login credentials
 username = "kasm_user"
 password = "password"
 url = "https://10.1.1.5:6901"
 
-urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
-
-# Step 1: Authenticate using requests
-session = requests.Session()
-session.verify = False
-response = session.get(url, auth=HTTPBasicAuth(username, password))
-print(response.status_code, response.text)
-
 ## Webdriver setup ##
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = '/usr/bin/chromium-wrapped'
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--user-data-dir=/home/docker/user-data")
+chrome_options.add_argument("--allow-running-insecure-content")
+chrome_options.add_argument("--disable-web-security")
+
 # docker flags
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--disable-dev-shm-usage")
-
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--user-data-dir=/home/docker/user-data")
-
 # no ssl errors
 chrome_options.add_argument('--ignore-certificate-errors')
-chrome_options.add_argument("--allow-running-insecure-content")
-chrome_options.add_argument("--disable-web-security")
-
 # allow automatic file download and clear all perms
 chrome_options.add_experimental_option("prefs", {
   "download.default_directory": "/config/Downloads",
@@ -47,7 +34,12 @@ chrome_options.add_experimental_option("prefs", {
   "profile.default_content_setting_values.geolocation": 1,
   "profile.default_content_setting_values.notifications": 1
 })
-
+# enable fake microphone
+chrome_options.add_argument('--use-fake-device-for-media-stream')
+chrome_options.add_argument('--use-fake-ui-for-media-stream')
+# enable fake webcam
+chrome_options.add_argument("--use-fake-ui-for-media-stream")
+chrome_options.add_argument("--use-fake-device-for-media-stream")
 # options and timeouts
 driver = webdriver.Chrome(options=chrome_options)
 driver.set_page_load_timeout(60)
