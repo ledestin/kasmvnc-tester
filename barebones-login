@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+
+import requests
+
+try:
+    response = requests.get("https://10.1.1.5:6901", verify=False)
+    print(response.status_code, response.text)
+except requests.exceptions.RequestException as e:
+    print("Error:", e)
