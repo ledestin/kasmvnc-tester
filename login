@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import requests
-from requests.auth import HTTPDigestAuth
+from requests.auth import HTTPBasicAuth
 
 # Define login credentials
 username = "kasm_user"
@@ -14,7 +14,11 @@ url = "https://localhost:6901"
 
 # Step 1: Authenticate using requests
 session = requests.Session()
-response = session.get(url, auth=HTTPDigestAuth(username, password))
+response = session.get(url, auth=HTTPBasicAuth(username, password))
+print(response.code)
+
+import sys
+sys.exit()
 
 # Step 2: Start Selenium with the session
 options = Options()
