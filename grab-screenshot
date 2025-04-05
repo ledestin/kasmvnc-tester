@@ -1,5 +1,12 @@
 #!/usr/bin/python3
 
+import argparse
+
+parser = argparse.ArgumentParser(description="Screenshot KasmVNC screen")
+
+parser.add_argument("screenshot_filename", help="Screenshot file name")
+cli_args = parser.parse_args()
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -38,6 +45,6 @@ import time
 time.sleep(2)
 
 # Take a screenshot
-driver.save_screenshot("screenshot.png")
+driver.save_screenshot(cli_args.screenshot_filename)
 # Close the browser
 driver.quit()
