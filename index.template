@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#26314e">
+    <title>Test Results</title>
+    <style>
+      img {
+        max-width: 100%;
+	cursor: pointer;
+      }
+      .results {
+        width: 600px;
+	max-width: 100%;
+      }
+      .resultbox {
+        cursor: pointer;
+        display: flex;
+        padding: 5px;
+        text-align: left;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 5px 0;
+        opacity: 1;
+        transition: 0.3s;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+      }
+      .resultbox:hover {
+        opacity: 0.75;
+      }
+      .webconsole {
+        width: 100%;
+      }
+      pre {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Test Results</h2>
+    <h3>Tag: {{ image_name }}</h3>
+    <h3>Sha: {{ image_sha }}</h3>
+    <h3>Cumalative - {{ report_status }}</h3>
+    <div class="results">
+      {% for report_test in report_tests %}
+      <div style="background-color:{% if report_test.status == "pass" %}green{% else %}red{% endif %};" class="resultbox" onclick="scrollto('{{ report_test.testname }}')">
+        <span style="background-color:{% if report_test.status == "pass" %}green{% else %}red{% endif %};">{{ report_test.testname }} - {{ report_test.status }}</span>
+      </div>
+      {% endfor %}
+      <div style="background-color:{% if web_console_status == "pass" %}green{% else %}red{% endif %};" class="resultbox" onclick="scrollto('Web Console')">
+        <span>Web Console - {{ web_console_status }}</span>
+      </div>
+      <div class="resultbox" onclick="scrollto('PS Tree')">
+        <span>PS Tree</span>
+      </div>
+      <div class="resultbox" onclick="scrollto('Packages')">
+        <span>Packages</span>
+      </div>
+    </div>
+    <div>
+      {% for report_test in report_tests %}
+      <div class="results">
+        <h2 id="{{ report_test.testname }}">{{ report_test.testname }} - {{ report_test.status }}</h2>
+        {% if report_test.screenshot %}<img src="{{ report_test.screenshot }}" onclick="window.open('{{ report_test.screenshot }}')"></img>{% endif %}
+	{% if report_test.spectrogram %}<img src="{{ report_test.spectrogram }}" onclick="window.open('{{ report_test.spectrogram }}')"></img>{% endif %}
+	{% if report_test.audio %}<audio controls><source src="{{ report_test.audio }}"></audio>{% endif %}
+        {% if report_test.link %}<a href="{{ report_test.link }}">{{ report_test.link }}</a>{% endif %}
+	<div class="resultbox">
+          <pre>{{ report_test.errorout }}</pre>
+        </div>
+      </div>
+      {% endfor %}
+      <div>
+        <h2 id="Web Console">Web Console - {{ web_console_status }}</h2>
+        {% for console in web_console %}
+	<div class="webconsole" style="background-color:{% if console.level == "SEVERE" %}red{% elif console.level == "WARNING" %}yellow{% else %}green{% endif %};">
+          <span>{{ console.level }} - {{ console.message }}</span>
+        </div>
+        {% endfor %}
+      <div>
+        <h2 id="PS Tree">PS Tree</h2>
+	<pre>{{ ps_tree }}</pre>
+      </div>
+      <div>
+        <h2 id="Packages">Packages</h2>
+        <pre>{{ packages }}</pre>
+      </div>
+    </div>
+    <script>
+      function scrollto(item) {
+        elmnt = document.getElementById(item);
+        elmnt.scrollIntoView();
+      }
+    </script>
+  </body>
+</html>

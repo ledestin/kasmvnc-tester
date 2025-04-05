@@ -28,7 +28,20 @@ def check_xfce_running(container):
     report_status = 'FAIL'
     print('xfce - error')
 
+def render_report():
+  with open('index.template') as file_:
+    template = Template(file_.read())
+
+  html = template.render(
+    image_name=TEST_IMAGE,
+    report_tests=report_tests,
+    report_status=report_status)
+
+  with open(f"{outdir}/index.html", 'w') as f:
+    f.write(html)
+
 import os
+from jinja2 import Template
 
 global report_status
 global report_tests
@@ -36,6 +49,10 @@ global docker_client
 report_tests = []
 report_status = 'PASS'
 
+global outdir
+outdir = 'output'
+
+global TEST_IMAGE
 TEST_IMAGE = detect_test_image()
 
 import docker
@@ -43,3 +60,6 @@ docker_client = docker.from_env()
 
 test_container = find_container_for_image(TEST_IMAGE)
 check_xfce_running(test_container)
+
+render_report()
+os.makedirs(outdir, exist_ok=True)
