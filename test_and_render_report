@@ -29,7 +29,7 @@ def check_xfce_running(container):
     print('xfce - error')
 
 def render_report():
-  with open('index.template') as file_:
+  with open('index.template.html') as file_:
     template = Template(file_.read())
 
   html = template.render(
