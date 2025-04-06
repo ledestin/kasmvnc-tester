@@ -24,7 +24,7 @@ RUN mkdir -p /var/run/nginx && \
     chown -R nginx:nginx /usr/share/nginx/html
 
 COPY test-and-render-report /tmp/
-COPY driver.py /tmp/
+COPY selenium_utils.py /tmp/
 COPY chromium-wrapped /usr/bin/
 
 RUN adduser nginx ssl-cert

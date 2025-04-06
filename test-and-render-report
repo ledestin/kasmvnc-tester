@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 
 def grab_screenshot(screenshot_filename):
-    subprocess.run(["./grab-screenshot.sh", f"{outdir}/{screenshot_filename}"],
-                             check=True)
+  driver.save_screenshot(f"{outdir}/{screenshot_filename}")
 
 def detect_test_image():
   if os.environ.get('TEST_IMAGE') is not None:
@@ -21,7 +20,7 @@ def check_xfce_running(container):
     xfce = container.exec_run(check_xfce_cmd)
     if xfce[0] == 0:
       pids = xfce[1].decode("utf-8")
-      # grab_screenshot("xfce.png")
+      grab_screenshot("xfce.png")
       report_tests.append({'testname':'XFCE Running','status':'pass','errorout': 'XFCE is running pid ' + pids, 'screenshot': "xfce.png"})
       print('xfce - complete')
     else:
@@ -48,7 +47,7 @@ def render_report():
 import os
 import subprocess
 from jinja2 import Template
-import driver
+from selenium_utils import driver
 
 global report_status
 global report_tests
