@@ -21,7 +21,7 @@ def check_xfce_running(container):
     xfce = container.exec_run(check_xfce_cmd)
     if xfce[0] == 0:
       pids = xfce[1].decode("utf-8")
-      grab_screenshot("xfce.png")
+      # grab_screenshot("xfce.png")
       report_tests.append({'testname':'XFCE Running','status':'pass','errorout': 'XFCE is running pid ' + pids, 'screenshot': "xfce.png"})
       print('xfce - complete')
     else:
@@ -67,5 +67,5 @@ docker_client = docker.from_env()
 test_container = find_container_for_image(TEST_IMAGE)
 check_xfce_running(test_container)
 
-render_report()
 os.makedirs(outdir, exist_ok=True)
+render_report()
