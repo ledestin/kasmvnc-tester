@@ -6,5 +6,5 @@ set -x
 image=kasmweb/ubuntu-focal-desktop:develop
 container_id=$(docker run --detach --rm  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password "$image")
 sleep 5
-./test-and-render-report
+./test-and-render-report.sh
 docker container stop "$container_id"
