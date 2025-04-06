@@ -51,15 +51,6 @@
         <span style="background-color:{% if report_test.status == "pass" %}green{% else %}red{% endif %};">{{ report_test.testname }} - {{ report_test.status }}</span>
       </div>
       {% endfor %}
-      <div style="background-color:{% if web_console_status == "pass" %}green{% else %}red{% endif %};" class="resultbox" onclick="scrollto('Web Console')">
-        <span>Web Console - {{ web_console_status }}</span>
-      </div>
-      <div class="resultbox" onclick="scrollto('PS Tree')">
-        <span>PS Tree</span>
-      </div>
-      <div class="resultbox" onclick="scrollto('Packages')">
-        <span>Packages</span>
-      </div>
     </div>
     <div>
       {% for report_test in report_tests %}
@@ -74,22 +65,6 @@
         </div>
       </div>
       {% endfor %}
-      <div>
-        <h2 id="Web Console">Web Console - {{ web_console_status }}</h2>
-        {% for console in web_console %}
-	<div class="webconsole" style="background-color:{% if console.level == "SEVERE" %}red{% elif console.level == "WARNING" %}yellow{% else %}green{% endif %};">
-          <span>{{ console.level }} - {{ console.message }}</span>
-        </div>
-        {% endfor %}
-      <div>
-        <h2 id="PS Tree">PS Tree</h2>
-	<pre>{{ ps_tree }}</pre>
-      </div>
-      <div>
-        <h2 id="Packages">Packages</h2>
-        <pre>{{ packages }}</pre>
-      </div>
-    </div>
     <script>
       function scrollto(item) {
         elmnt = document.getElementById(item);
