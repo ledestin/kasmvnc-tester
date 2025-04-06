@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+def grab_screenshot(screenshot_filename):
+    subprocess.run(["./grab-screenshot.sh", f"{outdir}/{screenshot_filename}"],
+                             check=True)
+
 def detect_test_image():
   if os.environ.get('TEST_IMAGE') is not None:
     return os.environ['TEST_IMAGE']
@@ -17,7 +21,8 @@ def check_xfce_running(container):
     xfce = container.exec_run(check_xfce_cmd)
     if xfce[0] == 0:
       pids = xfce[1].decode("utf-8")
-      report_tests.append({'testname':'XFCE Running','status':'pass','errorout': 'XFCE is running pid ' + pids})
+      grab_screenshot("xfce.png")
+      report_tests.append({'testname':'XFCE Running','status':'pass','errorout': 'XFCE is running pid ' + pids, 'screenshot': "xfce.png"})
       print('xfce - complete')
     else:
       report_tests.append({'testname':'XFCE Running','status':'fail','errorout': 'XFCE is not running'})
@@ -26,7 +31,7 @@ def check_xfce_running(container):
   except Exception as error:
     report_tests.append({'testname':'XFCE Running','status':'fail','errorout': error})
     report_status = 'FAIL'
-    print('xfce - error')
+    print('xfce - error:', error)
 
 def render_report():
   with open('index.template.html') as file_:
@@ -41,6 +46,7 @@ def render_report():
     f.write(html)
 
 import os
+import subprocess
 from jinja2 import Template
 
 global report_status
