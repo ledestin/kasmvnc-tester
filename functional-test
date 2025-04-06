@@ -6,5 +6,6 @@ set -x
 image=kasmweb/ubuntu-focal-desktop:develop
 container_id=$(docker run --detach --rm  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password "$image")
 sleep 5
-check-xfce-running
+./check-xfce-running
+./grab-screenshot.sh xfce.png
 docker container stop "$container_id"
