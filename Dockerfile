@@ -22,7 +22,7 @@ RUN mkdir -p /var/run/nginx && \
     chown -R nginx:nginx /etc/nginx/conf.d && \
     chown -R nginx:nginx /usr/share/nginx/html
 
-COPY barebones-screenshot /tmp/
+COPY grab-screenshot /usr/local/bin/
 COPY chromium-wrapped /usr/bin/
 
 RUN adduser nginx ssl-cert
