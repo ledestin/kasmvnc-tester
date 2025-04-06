@@ -48,6 +48,7 @@ def render_report():
 import os
 import subprocess
 from jinja2 import Template
+import driver
 
 global report_status
 global report_tests
