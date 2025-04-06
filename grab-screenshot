@@ -1,50 +1,30 @@
 #!/usr/bin/python3
 
-import argparse
-
-parser = argparse.ArgumentParser(description="Screenshot KasmVNC screen")
-
-parser.add_argument("screenshot_filename", help="Screenshot file name")
-cli_args = parser.parse_args()
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-import sys
 
-# Set up Chrome options for headless browsing
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Run Chrome in headless mode
-chrome_options.add_argument('--ignore-certificate-errors')
+def create_driver():
+    # Set up Chrome options for headless browsing
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+    chrome_options.add_argument('--ignore-certificate-errors')
 
-# docker flags
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--allow-insecure-localhost")
-chrome_options.add_argument("--window-size=1420,1080")
+    # docker flags
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--allow-insecure-localhost")
+    chrome_options.add_argument("--window-size=1420,1080")
 
-# Specify the path to the ChromeDriver executable
-webdriver_path = '/usr/bin/chromedriver'  # Replace with the actual path
-# Set up the Chrome service
-chrome_service = Service(webdriver_path)
-# Initialize the Chrome driver
-driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-# Navigate to a website
-username = "kasm_user"
-password = "password"
-url = "https://10.1.1.5:6901"
+    # Specify the path to the ChromeDriver executable
+    webdriver_path = '/usr/bin/chromedriver'  # Replace with the actual path
+    # Set up the Chrome service
+    chrome_service = Service(webdriver_path)
+    # Initialize the Chrome driver
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    return driver
 
-KASM_HOST = '10.1.1.5'
-KASM_PORT = '6901'
-# driver.get(f"https://{KASM_HOST}:{KASM_PORT}")
+driver = create_driver()
 driver.get(f"https://localhost")
-
-import time
-time.sleep(2)
-
-# Take a screenshot
-driver.save_screenshot(cli_args.screenshot_filename)
-# Close the browser
-driver.quit()
