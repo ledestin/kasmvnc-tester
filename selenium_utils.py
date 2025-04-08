@@ -7,7 +7,6 @@ from selenium.webdriver.chrome.options import Options
 def create_driver():
     # Set up Chrome options for headless browsing
     chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Run Chrome in headless mode
     chrome_options.add_argument('--ignore-certificate-errors')
 
     # docker flags

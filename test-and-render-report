@@ -1,5 +1,41 @@
 #!/usr/bin/python3
 
+def keep_body_focused_for_clipboard_copy_to_work():
+  body_element = driver.find_element(By.TAG_NAME, 'body')
+  body_element.click()
+
+def set_container_clipboard(text):
+  set_clipboard_cmd = f"/bin/bash -c 'echo {text} | xclip -sel clip'"
+  test_container.exec_run(set_clipboard_cmd)
+
+def read_host_clipboard():
+    print_clipboard = subprocess.Popen('xsel --display :1.0 --clipboard',shell=True,stdout=subprocess.PIPE)
+    clipboard = print_clipboard.communicate()[0].decode("utf-8").replace('\n','')
+    return clipboard
+
+def test_clipboard():
+  driver.set_permissions('clipboard-read', 'granted')
+  driver.set_permissions('clipboard-write', 'granted')
+
+  try:
+    keep_body_focused_for_clipboard_copy_to_work()
+    set_container_clipboard('clipboard-test')
+    clipboard = read_host_clipboard()
+
+    # Dump the clipboard from the running selenium X session
+    if clipboard == 'clipboard-test':
+      report_tests.append({'testname':'Chrome Clipboard API','status':'pass','errorout': 'Clipboard API string match'})
+      print('clipboard api - complete')
+    else:
+      report_tests.append({'testname':'Chrome Clipboard API','status':'fail','errorout': 'Clipboard API string bad not "clipboard-test" : ' + clipboard})
+      report_status = 'FAIL'
+      print('clipboard api - error')
+  except Exception as error:
+    report_tests.append({'testname':'Chrome Clipboard API','status':'fail','errorout': error})
+    report_status = 'FAIL'
+    print('clipboard api - error', error)
+
+
 def grab_screenshot(screenshot_filename):
   driver.save_screenshot(f"{outdir}/{screenshot_filename}")
 
@@ -58,11 +94,14 @@ def render_report():
 import os
 import subprocess
 from jinja2 import Template
+
+from selenium.webdriver.common.by import By
 from selenium_utils import driver
 
 global report_status
 global report_tests
 global docker_client
+global test_container
 report_tests = []
 report_status = 'PASS'
 
@@ -77,6 +116,7 @@ docker_client = docker.from_env()
 
 test_container = find_container_for_image(TEST_IMAGE)
 check_xfce_running(test_container)
+test_clipboard()
 test_resizing()
 
 os.makedirs(outdir, exist_ok=True)

@@ -1,9 +1,9 @@
 FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y python3-selenium chromium chromium-driver
-RUN apt-get update && apt-get install -y nginx ssl-cert
-RUN apt-get update && apt-get install -y curl
 RUN apt-get update && apt-get install -y python3-jinja2 python3-docker
+RUN apt-get update && apt-get install -y nginx ssl-cert curl
+RUN apt-get update && apt-get install -y xsel xvfb
 
 COPY kasmvnc.nginx /etc/nginx/sites-available/kasmvnc
 RUN ln -s /etc/nginx/sites-available/kasmvnc /etc/nginx/sites-enabled/
