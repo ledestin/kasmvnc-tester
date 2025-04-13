@@ -8,10 +8,63 @@ def set_container_clipboard(text):
   set_clipboard_cmd = f"/bin/bash -c 'echo {text} | xclip -sel clip'"
   test_container.exec_run(set_clipboard_cmd)
 
+def read_container_clipboard():
+  read_clipboard_cmd = f"/bin/bash -c 'xclip -o -sel clip'"
+
+  exec_result = test_container.exec_run(read_clipboard_cmd, demux=True)
+  exit_code = exec_result.exit_code
+  output = b""
+  print('read_container_clipboard')
+  if exec_result.output:
+      if exec_result.output[0]: # stdout
+        output += exec_result.output[0]
+      if exec_result.output[1]: # stderr
+        output += exec_result.output[1]
+  print(output)
+
+def paste_into_container_clipboard():
+  body_element = driver.find_element(By.TAG_NAME, 'body')
+  body_element.send_keys(Keys.CONTROL, 'v')
+
+def paste_special_to_container(element):
+  """Simulates Ctrl+Shift+V in the given element."""
+  try:
+    actions = ActionChains(driver)
+    actions.move_to_element(element).click()
+    actions.key_down(Keys.CONTROL, element)
+    actions.key_down(Keys.SHIFT, element)
+    actions.send_keys('v')
+    actions.key_up(Keys.SHIFT, element)
+    actions.key_up(Keys.CONTROL, element)
+    actions.perform()
+  except Exception as e:
+    print(f"Error emulating Ctrl+Shift+V: {e}")
+
+def set_host_clipboard(text):
+  set_clipboard = subprocess.Popen(f'/bin/bash -c "echo -n {text} | xsel -i --clipboard"',
+                   shell=True, stdout=subprocess.PIPE)
+  set_clipboard.communicate()
+
 def read_host_clipboard():
-    print_clipboard = subprocess.Popen('xsel --display :1.0 --clipboard',shell=True,stdout=subprocess.PIPE)
-    clipboard = print_clipboard.communicate()[0].decode("utf-8").replace('\n','')
-    return clipboard
+  print_clipboard = subprocess.Popen('xsel --clipboard', shell=True,
+                                     stdout=subprocess.PIPE)
+  clipboard = print_clipboard.communicate()[0].decode("utf-8").replace('\n','')
+  return clipboard
+
+def test_container_clipboard_paste():
+  driver.set_permissions('clipboard-read', 'granted')
+  driver.set_permissions('clipboard-write', 'granted')
+
+  set_host_clipboard('test_container_clipboard_paste')
+  keep_body_focused_for_clipboard_copy_to_work()
+
+  test_container.exec_run('xfce4-terminal', demux=True, detach=True)
+
+  body_element = driver.find_element(By.TAG_NAME, 'body')
+  paste_special_to_container(body_element)
+
+  grab_screenshot('terminal.png')
+  read_container_clipboard()
 
 def test_clipboard():
   driver.set_permissions('clipboard-read', 'granted')
@@ -95,29 +148,35 @@ import os
 import subprocess
 from jinja2 import Template
 
-from selenium.webdriver.common.by import By
-from selenium_utils import driver
+from xvfbwrapper import Xvfb
 
-global report_status
-global report_tests
-global docker_client
-global test_container
-report_tests = []
-report_status = 'PASS'
+with Xvfb() as xvfb:
+  from selenium.webdriver.common.by import By
+  from selenium.webdriver.common.keys import Keys
+  from selenium.webdriver import ActionChains
+  from selenium_utils import driver
 
-global outdir
-outdir = 'output'
+  global report_status
+  global report_tests
+  global docker_client
+  global test_container
+  report_tests = []
+  report_status = 'PASS'
 
-global TEST_IMAGE
-TEST_IMAGE = detect_test_image()
+  global outdir
+  outdir = 'output'
 
-import docker
-docker_client = docker.from_env()
+  global TEST_IMAGE
+  TEST_IMAGE = detect_test_image()
 
-test_container = find_container_for_image(TEST_IMAGE)
-check_xfce_running(test_container)
-test_clipboard()
-test_resizing()
+  import docker
+  docker_client = docker.from_env()
 
-os.makedirs(outdir, exist_ok=True)
-render_report()
+  test_container = find_container_for_image(TEST_IMAGE)
+  test_container_clipboard_paste()
+  check_xfce_running(test_container)
+  test_clipboard()
+  test_resizing()
+
+  os.makedirs(outdir, exist_ok=True)
+  render_report()

@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y python3-selenium chromium chromium-driv
 RUN apt-get update && apt-get install -y python3-jinja2 python3-docker
 RUN apt-get update && apt-get install -y nginx ssl-cert curl
 RUN apt-get update && apt-get install -y xsel xvfb
+RUN apt-get update && apt-get install -y python3-xvfbwrapper
 
 COPY kasmvnc.nginx /etc/nginx/sites-available/kasmvnc
 RUN ln -s /etc/nginx/sites-available/kasmvnc /etc/nginx/sites-enabled/
