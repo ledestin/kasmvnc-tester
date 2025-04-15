@@ -64,9 +64,9 @@ def enable_clipboard_read_write():
   driver.set_permissions('clipboard-write', 'granted')
 
 def test_clipboard_copy_from_host():
-  enable_clipboard_read_write()
-
   try:
+    enable_clipboard_read_write()
+
     text_from_host = 'text from host'
     set_host_clipboard(text_from_host)
     focus_body_to_copy_clipboard()
@@ -90,9 +90,8 @@ def test_clipboard_copy_from_host():
     print('clipboard api (copy from host) - error', error)
 
 def test_clipboard_copy_from_container():
-  enable_clipboard_read_write()
-
   try:
+    enable_clipboard_read_write()
     keep_body_focused_for_clipboard_copy_to_work()
 
     text_from_container = 'text from container'
