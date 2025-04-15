@@ -82,7 +82,7 @@ def test_clipboard_copy_from_host():
     report_status = 'FAIL'
     print('clipboard api (copy from host) - error', error)
 
-def test_clipboard():
+def test_clipboard_copy_from_container():
   driver.set_permissions('clipboard-read', 'granted')
   driver.set_permissions('clipboard-write', 'granted')
 
@@ -191,7 +191,7 @@ with Xvfb() as xvfb:
   test_container = find_container_for_image(TEST_IMAGE)
   check_xfce_running(test_container)
   test_clipboard_copy_from_host()
-  test_clipboard()
+  test_clipboard_copy_from_container()
   test_resizing()
 
   os.makedirs(outdir, exist_ok=True)
