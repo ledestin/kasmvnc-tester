@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+def focus_body_to_copy_clipboard():
+  keep_body_focused_for_clipboard_copy_to_work()
+
 def keep_body_focused_for_clipboard_copy_to_work():
   body_element = driver.find_element(By.TAG_NAME, 'body')
   body_element.click()
@@ -62,7 +65,7 @@ def test_clipboard_copy_from_host():
 
   try:
     set_host_clipboard('text from host')
-    keep_body_focused_for_clipboard_copy_to_work()
+    focus_body_to_copy_clipboard()
 
     spawn_terminal_in_container()
 
