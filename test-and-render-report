@@ -14,21 +14,23 @@ def read_container_clipboard():
   exec_result = test_container.exec_run(read_clipboard_cmd, demux=True)
   exit_code = exec_result.exit_code
   output = b""
-  print('read_container_clipboard')
   if exec_result.output:
-      if exec_result.output[0]: # stdout
+      if exec_result.output[0]:
         output += exec_result.output[0]
-      if exec_result.output[1]: # stderr
+      if exec_result.output[1]:
         output += exec_result.output[1]
-  print(output)
+
+  return output.decode()
 
 def paste_into_container_clipboard():
   body_element = driver.find_element(By.TAG_NAME, 'body')
   body_element.send_keys(Keys.CONTROL, 'v')
 
-def paste_special_to_container(element):
+def paste_special_to_container():
   """Simulates Ctrl+Shift+V in the given element."""
   try:
+    element = driver.find_element(By.TAG_NAME, 'body')
+
     actions = ActionChains(driver)
     actions.move_to_element(element).click()
     actions.key_down(Keys.CONTROL, element)
@@ -51,20 +53,34 @@ def read_host_clipboard():
   clipboard = print_clipboard.communicate()[0].decode("utf-8").replace('\n','')
   return clipboard
 
-def test_container_clipboard_paste():
+def spawn_terminal_in_container():
+  test_container.exec_run('xfce4-terminal', demux=True, detach=True)
+
+def test_clipboard_copy_from_host():
   driver.set_permissions('clipboard-read', 'granted')
   driver.set_permissions('clipboard-write', 'granted')
 
-  set_host_clipboard('test_container_clipboard_paste')
-  keep_body_focused_for_clipboard_copy_to_work()
+  try:
+    set_host_clipboard('text from host')
+    keep_body_focused_for_clipboard_copy_to_work()
 
-  test_container.exec_run('xfce4-terminal', demux=True, detach=True)
+    spawn_terminal_in_container()
 
-  body_element = driver.find_element(By.TAG_NAME, 'body')
-  paste_special_to_container(body_element)
+    paste_special_to_container()
+    grab_screenshot('terminal.png')
 
-  grab_screenshot('terminal.png')
-  read_container_clipboard()
+    clipboard = read_container_clipboard()
+    if clipboard == 'text from host':
+      report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'pass','errorout': 'Clipboard API string match'})
+      print('clipboard api (copy from host) - complete')
+    else:
+      report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'fail','errorout': 'Clipboard API string bad not "text from host" : ' + clipboard})
+      report_status = 'FAIL'
+      print('clipboard api (copy from host) - error')
+  except Exception as error:
+    report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'fail','errorout': error})
+    report_status = 'FAIL'
+    print('clipboard api (copy from host) - error', error)
 
 def test_clipboard():
   driver.set_permissions('clipboard-read', 'granted')
@@ -173,8 +189,8 @@ with Xvfb() as xvfb:
   docker_client = docker.from_env()
 
   test_container = find_container_for_image(TEST_IMAGE)
-  test_container_clipboard_paste()
   check_xfce_running(test_container)
+  test_clipboard_copy_from_host()
   test_clipboard()
   test_resizing()
 
