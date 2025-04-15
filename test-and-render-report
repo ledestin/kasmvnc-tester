@@ -59,12 +59,12 @@ def read_host_clipboard():
 def spawn_terminal_in_container():
   test_container.exec_run('xfce4-terminal', demux=True, detach=True)
 
-def allow_clipboard_read_write():
+def enable_clipboard_read_write():
   driver.set_permissions('clipboard-read', 'granted')
   driver.set_permissions('clipboard-write', 'granted')
 
 def test_clipboard_copy_from_host():
-  allow_clipboard_read_write()
+  enable_clipboard_read_write()
 
   try:
     set_host_clipboard('text from host')
@@ -89,7 +89,7 @@ def test_clipboard_copy_from_host():
     print('clipboard api (copy from host) - error', error)
 
 def test_clipboard_copy_from_container():
-  allow_clipboard_read_write()
+  enable_clipboard_read_write()
 
   try:
     keep_body_focused_for_clipboard_copy_to_work()
