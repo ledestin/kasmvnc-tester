@@ -67,7 +67,8 @@ def test_clipboard_copy_from_host():
   enable_clipboard_read_write()
 
   try:
-    set_host_clipboard('text from host')
+    text_from_host = 'text from host'
+    set_host_clipboard(text_from_host)
     focus_body_to_copy_clipboard()
 
     spawn_terminal_in_container()
@@ -76,11 +77,11 @@ def test_clipboard_copy_from_host():
     grab_screenshot('terminal.png')
 
     clipboard = read_container_clipboard()
-    if clipboard == 'text from host':
+    if clipboard == text_from_host:
       report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'pass','errorout': 'Clipboard API string match'})
       print('clipboard api (copy from host) - complete')
     else:
-      report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'fail','errorout': 'Clipboard API string bad not "text from host" : ' + clipboard})
+      report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'fail','errorout': f'Clipboard API string bad not "{text_from_host}" : ' + clipboard})
       report_status = 'FAIL'
       print('clipboard api (copy from host) - error')
   except Exception as error:
