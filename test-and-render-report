@@ -93,17 +93,16 @@ def test_clipboard_copy_from_container():
 
     # Dump the clipboard from the running selenium X session
     if clipboard == 'clipboard-test':
-      report_tests.append({'testname':'Chrome Clipboard API','status':'pass','errorout': 'Clipboard API string match'})
-      print('clipboard api - complete')
+      report_tests.append({'testname':'Chrome Clipboard API copy from container','status':'pass','errorout': 'Clipboard API string match'})
+      print('clipboard api (copy from container) - complete')
     else:
-      report_tests.append({'testname':'Chrome Clipboard API','status':'fail','errorout': 'Clipboard API string bad not "clipboard-test" : ' + clipboard})
+      report_tests.append({'testname':'Chrome Clipboard API copy from container','status':'fail','errorout': 'Clipboard API string bad not "clipboard-test" : ' + clipboard})
       report_status = 'FAIL'
-      print('clipboard api - error')
+      print('clipboard api (copy from container) - error')
   except Exception as error:
-    report_tests.append({'testname':'Chrome Clipboard API','status':'fail','errorout': error})
+    report_tests.append({'testname':'Chrome Clipboard API copy from container','status':'fail','errorout': error})
     report_status = 'FAIL'
-    print('clipboard api - error', error)
-
+    print('clipboard api  (copy from container)- error', error)
 
 def grab_screenshot(screenshot_filename):
   driver.save_screenshot(f"{outdir}/{screenshot_filename}")
