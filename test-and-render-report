@@ -63,7 +63,7 @@ def enable_clipboard_read_write():
   driver.set_permissions('clipboard-read', 'granted')
   driver.set_permissions('clipboard-write', 'granted')
 
-def test_clipboard_copy_from_host():
+def test_seamless_clipboard_copy_from_host():
   try:
     enable_clipboard_read_write()
 
@@ -89,7 +89,7 @@ def test_clipboard_copy_from_host():
     report_status = 'FAIL'
     print('clipboard api (copy from host) - error', error)
 
-def test_clipboard_copy_from_container():
+def test_seamless_clipboard_copy_from_container():
   try:
     enable_clipboard_read_write()
     keep_body_focused_for_clipboard_copy_to_work()
@@ -196,8 +196,8 @@ with Xvfb() as xvfb:
 
   test_container = find_container_for_image(TEST_IMAGE)
   check_xfce_running(test_container)
-  test_clipboard_copy_from_host()
-  test_clipboard_copy_from_container()
+  test_seamless_clipboard_copy_from_host()
+  test_seamless_clipboard_copy_from_container()
   test_resizing()
 
   os.makedirs(outdir, exist_ok=True)
