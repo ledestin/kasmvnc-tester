@@ -88,15 +88,17 @@ def test_clipboard_copy_from_container():
 
   try:
     keep_body_focused_for_clipboard_copy_to_work()
-    set_container_clipboard('clipboard-test')
+
+    text_from_container = 'text from container'
+    set_container_clipboard(text_from_container)
     clipboard = read_host_clipboard()
 
     # Dump the clipboard from the running selenium X session
-    if clipboard == 'clipboard-test':
+    if clipboard == text_from_container:
       report_tests.append({'testname':'Chrome Clipboard API copy from container','status':'pass','errorout': 'Clipboard API string match'})
       print('clipboard api (copy from container) - complete')
     else:
-      report_tests.append({'testname':'Chrome Clipboard API copy from container','status':'fail','errorout': 'Clipboard API string bad not "clipboard-test" : ' + clipboard})
+      report_tests.append({'testname':'Chrome Clipboard API copy from container','status':'fail','errorout': f'Clipboard API string bad not "{text_from_container}" : ' + clipboard})
       report_status = 'FAIL'
       print('clipboard api (copy from container) - error')
   except Exception as error:
