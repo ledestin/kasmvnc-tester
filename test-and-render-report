@@ -84,6 +84,11 @@ def enable_clipboard_read_write():
   driver.set_permissions('clipboard-write', 'granted')
 
 def test_seamless_clipboard_copy_from_host():
+  global report_test_name
+  global progress_test_name
+  report_test_name = 'Chrome Clipboard API copy from host'
+  progress_test_name = 'clipboard api (copy from host)'
+
   try:
     enable_clipboard_read_write()
 
@@ -98,16 +103,14 @@ def test_seamless_clipboard_copy_from_host():
 
     clipboard = read_container_clipboard()
     if clipboard == text_from_host:
-      report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'pass','errorout': 'Clipboard API string match'})
-      print('clipboard api (copy from host) - complete')
+      report_test_success('Clipboard API string match')
+      progress_test_success()
     else:
-      report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'fail','errorout': f'Clipboard API string bad not "{text_from_host}" : ' + clipboard})
-      report_status = 'FAIL'
-      print('clipboard api (copy from host) - error')
+      report_test_fail(f'Clipboard API string bad not "{text_from_host}": ' + clipboard)
+      progress_test_fail()
   except Exception as error:
-    report_tests.append({'testname':'Chrome Clipboard API copy from host','status':'fail','errorout': error})
-    report_status = 'FAIL'
-    print('clipboard api (copy from host) - error', error)
+    report_test_fail(error)
+    progress_test_fail(error)
 
 def test_seamless_clipboard_copy_from_container():
   global report_test_name
