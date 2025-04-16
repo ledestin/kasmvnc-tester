@@ -172,7 +172,7 @@ def test_window_resize():
     report_test_fail(error)
     progress_test_fail(error)
 
-def check_xfce_running(container):
+def test_xfce_running(container):
   global report_test_name
   global progress_test_name
   report_test_name = 'XFCE Running'
@@ -238,7 +238,7 @@ with Xvfb() as xvfb:
   docker_client = docker.from_env()
 
   test_container = find_container_for_image(TEST_IMAGE)
-  check_xfce_running(test_container)
+  test_xfce_running(test_container)
   test_seamless_clipboard_copy_from_host()
   test_seamless_clipboard_copy_from_container()
   test_window_resize()
