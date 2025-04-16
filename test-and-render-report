@@ -1,22 +1,22 @@
 #!/usr/bin/python3
 
-def report_test_success(test_name, message):
-  report_tests.append({'testname': test_name, 'status': 'pass',
+def report_test_success(message):
+  report_tests.append({'testname': report_test_name, 'status': 'pass',
                        'errorout': message})
 
-def progress_test_success(test_name):
-  print(f'{test_name} - complete')
+def progress_test_success():
+  print(f'{progress_test_name} - complete')
 
-def report_test_fail(test_name, message):
-  report_tests.append({'testname': test_name, 'status': 'fail',
+def report_test_fail(message):
+  report_tests.append({'testname': report_test_name, 'status': 'fail',
                        'errorout': message})
   report_status = 'FAIL'
 
-def progress_test_fail(test_name, message=None):
+def progress_test_fail(message=None):
   if (message):
-    print(f'{test_name} - error ({message})')
+    print(f'{progress_test_name} - error ({message})')
   else:
-    print(f'{test_name} - error')
+    print(f'{progress_test_name} - error')
 
 def focus_body_to_copy_clipboard():
   keep_body_focused_for_clipboard_copy_to_work()
@@ -108,6 +108,11 @@ def test_seamless_clipboard_copy_from_host():
     print('clipboard api (copy from host) - error', error)
 
 def test_seamless_clipboard_copy_from_container():
+  global report_test_name
+  global progress_test_name
+  report_test_name = 'Chrome Clipboard API copy from container'
+  progress_test_name = 'clipboard api (copy from container)'
+
   try:
     enable_clipboard_read_write()
     keep_body_focused_for_clipboard_copy_to_work()
@@ -118,15 +123,14 @@ def test_seamless_clipboard_copy_from_container():
 
     # Dump the clipboard from the running selenium X session
     if clipboard == text_from_container:
-      report_test_success('Chrome Clipboard API copy from container', 'Clipboard API string match')
-      progress_test_success('clipboard api (copy from container)')
+      report_test_success('Clipboard API string match')
+      progress_test_success()
     else:
-      report_test_fail('Chrome Clipboard API copy from container',
-                f'Clipboard API string bad not "{text_from_container}": {clipboard}')
-      progress_test_fail('clipboard api (copy from container)')
+      report_test_fail(f'Clipboard API string bad not "{text_from_container}": {clipboard}')
+      progress_test_fail()
   except Exception as error:
-    report_test_fail('Chrome Clipboard API copy from container', error)
-    progress_test_fail('clipboard api (copy from container)', error)
+    report_test_fail(error)
+    progress_test_fail(error)
 
 def grab_screenshot(screenshot_filename):
   driver.save_screenshot(f"{outdir}/{screenshot_filename}")
@@ -197,6 +201,9 @@ with Xvfb() as xvfb:
 
   global report_status
   global report_tests
+  global report_test_name
+  global progress_test_name
+
   global docker_client
   global test_container
   report_tests = []
