@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
-def report_test_success(message):
-  report_tests.append({'testname': report_test_name, 'status': 'pass',
-                       'errorout': message})
+def report_test_success(message, screenshot=None):
+  data = {'testname': report_test_name, 'status': 'pass', 'errorout': message,
+          'screenshot': screenshot}
+
+  report_tests.append(data)
 
 def progress_test_success():
   print(f'{progress_test_name} - complete')
@@ -158,22 +160,26 @@ def test_resizing():
     print('resize - error:', error)
 
 def check_xfce_running(container):
+  global report_test_name
+  global progress_test_name
+  report_test_name = 'XFCE Running'
+  progress_test_name = 'xfce'
+
   try:
     check_xfce_cmd = '/bin/bash -c "pgrep xfce4-session"'
     xfce = container.exec_run(check_xfce_cmd)
     if xfce[0] == 0:
       pids = xfce[1].decode("utf-8")
       grab_screenshot("xfce.png")
-      report_tests.append({'testname':'XFCE Running','status':'pass','errorout': 'XFCE is running pid ' + pids, 'screenshot': "xfce.png"})
-      print('xfce - complete')
+
+      report_test_success('XFCE is running pid ' + pids, screenshot="xfce.png")
+      progress_test_success()
     else:
-      report_tests.append({'testname':'XFCE Running','status':'fail','errorout': 'XFCE is not running'})
-      report_status = 'FAIL'
-      print('xfce - error')
+      report_test_fail('XFCE is not running')
+      progress_test_fail()
   except Exception as error:
-    report_tests.append({'testname':'XFCE Running','status':'fail','errorout': error})
-    report_status = 'FAIL'
-    print('xfce - error:', error)
+      report_test_fail(error)
+      progress_test_fail(error)
 
 def render_report():
   with open('index.template.html') as file_:
