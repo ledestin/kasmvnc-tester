@@ -79,6 +79,9 @@ def read_host_clipboard():
 def spawn_terminal_in_container():
   test_container.exec_run('xfce4-terminal', demux=True, detach=True)
 
+def kill_terminal_in_container():
+  test_container.exec_run('pkill xfce4-terminal')
+
 def enable_clipboard_read_write():
   driver.set_permissions('clipboard-read', 'granted')
   driver.set_permissions('clipboard-write', 'granted')
@@ -103,7 +106,8 @@ def test_seamless_clipboard_copy_from_host():
 
     clipboard = read_container_clipboard()
     if clipboard == text_from_host:
-      report_test_success('Clipboard API string match')
+      report_test_success('Clipboard API string match',
+        screenshot='terminal.png')
       progress_test_success()
     else:
       report_test_fail(f'Clipboard API string bad not "{text_from_host}": ' + clipboard)
@@ -111,6 +115,8 @@ def test_seamless_clipboard_copy_from_host():
   except Exception as error:
     report_test_fail(error)
     progress_test_fail(error)
+  finally:
+    kill_terminal_in_container()
 
 def test_seamless_clipboard_copy_from_container():
   global report_test_name
