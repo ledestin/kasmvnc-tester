@@ -1,5 +1,14 @@
 #!/usr/bin/python3
 
+def disable_menu_animation():
+  driver.execute_script("""
+    document.querySelectorAll('*').forEach(function(element) {
+        element.style.transition = 'none';
+        element.style.animationDuration = '0s';
+        element.style.animationDelay = '-1ms';
+    });
+  """)
+
 def report_test_success(message, screenshot=None):
   data = {'testname': report_test_name, 'status': 'pass', 'errorout': message,
           'screenshot': screenshot}
@@ -178,6 +187,23 @@ def test_window_resize():
     report_test_fail(error)
     progress_test_fail(error)
 
+def benchmark_test_ufo():
+  global report_test_name
+  global progress_test_name
+  report_test_name = 'TestUFO benchmark'
+  progress_test_name = 'test ufo'
+
+  try:
+    driver.find_element(By.ID, "noVNC_settings_button").click()
+    grab_screenshot("menu1.png")
+    driver.find_element(By.CSS_SELECTOR, "#noVNC_setting_enable_perf_stats + span").click()
+    grab_screenshot("menu2.png")
+
+    progress_test_success()
+  except Exception as error:
+      report_test_fail(error)
+      progress_test_fail(error)
+
 def test_xfce_running(container):
   global report_test_name
   global progress_test_name
@@ -214,6 +240,7 @@ def render_report():
 
 import os
 import subprocess
+import time
 from jinja2 import Template
 
 from xvfbwrapper import Xvfb
@@ -244,6 +271,8 @@ with Xvfb() as xvfb:
   docker_client = docker.from_env()
 
   test_container = find_container_for_image(TEST_IMAGE)
+  disable_menu_animation()
+  benchmark_test_ufo()
   test_xfce_running(test_container)
   test_seamless_clipboard_copy_from_host()
   test_seamless_clipboard_copy_from_container()
