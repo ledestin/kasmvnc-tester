@@ -107,6 +107,7 @@ def test_seamless_clipboard_copy_from_host():
     text_from_host = 'text from host'
     set_host_clipboard(text_from_host)
     focus_body_to_copy_clipboard()
+    time.sleep(3)
 
     spawn_terminal_in_container()
 
