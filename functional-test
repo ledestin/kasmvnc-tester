@@ -7,9 +7,14 @@ cleanup() {
   [ -n "$container_id" ] && docker container stop "$container_id"
 }
 
+build_workspaces_image() {
+  docker build -t "$workspaces_image" -f Workspaces.dockerfile .
+}
+
 trap cleanup EXIT
 
-image=kasmweb/ubuntu-jammy-desktop:develop
-container_id=$(docker run --detach --rm  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password "$image")
+workspaces_image=kasmweb/ubuntu-jammy-desktop-with-updated-kasmvnc:develop
+build_workspaces_image
+container_id=$(docker run --detach --rm  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password "$workspaces_image")
 sleep 5
 ./test-and-render-report.sh
