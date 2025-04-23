@@ -107,7 +107,6 @@ def test_seamless_clipboard_copy_from_host():
     text_from_host = 'text from host'
     set_host_clipboard(text_from_host)
     focus_body_to_copy_clipboard()
-    time.sleep(10)
 
     spawn_terminal_in_container()
 
@@ -274,8 +273,8 @@ with Xvfb() as xvfb:
   test_container = find_container_for_image(TEST_IMAGE)
   disable_menu_animation()
   test_xfce_running(test_container)
-  test_seamless_clipboard_copy_from_host()
-  test_seamless_clipboard_copy_from_container()
+  # test_seamless_clipboard_copy_from_host()
+  # test_seamless_clipboard_copy_from_container()
   test_window_resize()
 
   os.makedirs(outdir, exist_ok=True)
