@@ -161,7 +161,7 @@ def detect_test_image():
   if os.environ.get('TEST_IMAGE') is not None:
     return os.environ['TEST_IMAGE']
 
-  return "kasmweb/ubuntu-jammy-desktop:develop"
+  return "kasmweb/ubuntu-jammy-desktop-with-updated-kasmvnc:develop"
 
 def find_container_for_image(image):
   for container in docker_client.containers.list():
