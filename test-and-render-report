@@ -29,6 +29,8 @@ def progress_test_fail(message=None):
   else:
     print(f'{progress_test_name} - error')
 
+  traceback.print_exc()
+
 def focus_body_to_copy_clipboard():
   keep_body_focused_for_clipboard_copy_to_work()
 
