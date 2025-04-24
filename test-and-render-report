@@ -213,6 +213,8 @@ def test_xfce_running(container):
   progress_test_name = 'xfce'
 
   try:
+    raise Exception.new("foo")
+
     check_xfce_cmd = '/bin/bash -c "pgrep xfce4-session"'
     xfce = container.exec_run(check_xfce_cmd)
     if xfce[0] == 0:
