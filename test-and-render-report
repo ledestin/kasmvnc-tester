@@ -281,3 +281,6 @@ with Xvfb() as xvfb:
 
   os.makedirs(outdir, exist_ok=True)
   render_report()
+
+  if (report_status == 'FAIL'):
+    sys.exit(1)
