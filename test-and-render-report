@@ -264,7 +264,7 @@ with Xvfb() as xvfb:
   report_status = 'PASS'
 
   global outdir
-  outdir = 'output'
+  outdir = 'report'
 
   global TEST_IMAGE
   TEST_IMAGE = detect_test_image()
