@@ -158,10 +158,10 @@ def grab_screenshot(screenshot_filename):
   driver.save_screenshot(f"{outdir}/{screenshot_filename}")
 
 def detect_test_image():
-  if os.environ.get('TEST_IMAGE') is not None:
-    return os.environ['TEST_IMAGE']
+  if os.environ.get('KASMVNC_IMAGE_TO_TEST_ON') is not None:
+    return os.environ['KASMVNC_IMAGE_TO_TEST_ON']
 
-  return "kasmweb/ubuntu-jammy-desktop-with-updated-kasmvnc:develop"
+  raise Exception("No KASMVNC_IMAGE_TO_TEST_ON env variable set")
 
 def find_container_for_image(image):
   for container in docker_client.containers.list():
@@ -233,7 +233,7 @@ def render_report():
     template = Template(file_.read())
 
   html = template.render(
-    image_name=TEST_IMAGE,
+    image_name=KASMVNC_IMAGE_TO_TEST_ON,
     report_tests=report_tests,
     report_status=report_status)
 
@@ -266,13 +266,13 @@ with Xvfb() as xvfb:
   global outdir
   outdir = 'report'
 
-  global TEST_IMAGE
-  TEST_IMAGE = detect_test_image()
+  global KASMVNC_IMAGE_TO_TEST_ON
+  KASMVNC_IMAGE_TO_TEST_ON = detect_test_image()
 
   import docker
   docker_client = docker.from_env()
 
-  test_container = find_container_for_image(TEST_IMAGE)
+  test_container = find_container_for_image(KASMVNC_IMAGE_TO_TEST_ON)
   disable_menu_animation()
   test_xfce_running(test_container)
   # test_seamless_clipboard_copy_from_host()
