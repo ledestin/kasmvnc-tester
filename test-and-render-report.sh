@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 docker build -t kasmvnc-functional-test .
 docker_group=$(grep docker /etc/group | awk -F: '{ print $3 }')
