@@ -15,7 +15,7 @@ trap cleanup EXIT
 
 workspaces_image=kasmweb/ubuntu-jammy-desktop:develop
 container_id=$(docker run --detach --rm  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password "$workspaces_image")
-sleep 5
+sleep 10
 
 KASMVNC_IMAGE_TO_TEST_ON="$workspaces_image"
 export KASMVNC_IMAGE_TO_TEST_ON
