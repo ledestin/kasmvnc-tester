@@ -3,11 +3,16 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 
 def create_driver():
     # Set up Chrome options for headless browsing
     chrome_options = Options()
     chrome_options.add_argument('--ignore-certificate-errors')
+
+    desired_capabilities = DesiredCapabilities.CHROME
+    desired_capabilities['goog:loggingPrefs'] = {'browser': 'ALL'}
 
     # docker flags
     chrome_options.add_argument("--disable-gpu")
@@ -22,7 +27,7 @@ def create_driver():
     # Set up the Chrome service
     chrome_service = Service(webdriver_path)
     # Initialize the Chrome driver
-    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options, desired_capabilities=desired_capabilities)
     return driver
 
 driver = create_driver()

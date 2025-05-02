@@ -275,6 +275,10 @@ with Xvfb() as xvfb:
   test_container = find_container_for_image(KASMVNC_IMAGE_TO_TEST_ON)
   disable_menu_animation()
   test_xfce_running(test_container)
+  logs = driver.get_log('browser')
+
+  for entry in logs:
+      print(entry)
   # test_seamless_clipboard_copy_from_host()
   # test_seamless_clipboard_copy_from_container()
   test_window_resize()
