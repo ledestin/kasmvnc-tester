@@ -18,7 +18,7 @@ workspaces_image=kasmweb/ubuntu-jammy-desktop:develop
 container_id=$(docker run --network=host --detach --rm -it --shm-size=512m -p 6901:6901 -e VNC_PW=password "$workspaces_image")
 container_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $container_id)
 export container_ip
-sleep $((60*60))
+sleep 5
 
 KASMVNC_IMAGE_TO_TEST_ON="$workspaces_image"
 export KASMVNC_IMAGE_TO_TEST_ON
