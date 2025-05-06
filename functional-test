@@ -14,7 +14,9 @@ build_workspaces_image() {
 trap cleanup EXIT
 
 set -x
-workspaces_image=kasmweb/ubuntu-jammy-desktop:develop
+workspaces_image=kasmweb/ubuntu-jammy-desktop-with-updated-kasmvnc:develop
+build_workspaces_image
+
 workspaces_container_id=$(docker run --detach --rm -it --shm-size=512m -p 6901:6901 -e VNC_PW=password "$workspaces_image")
 workspaces_container_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $workspaces_container_id)
 export workspaces_container_ip
