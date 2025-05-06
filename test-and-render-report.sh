@@ -3,6 +3,7 @@
 set -e
 set -x
 
+mkdir -p .build
 sed "s/workspaces_container_ip/$workspaces_container_ip/" \
   kasmvnc.nginx.template > .build/kasmvnc.nginx
 docker build -t kasmvnc-functional-test .
