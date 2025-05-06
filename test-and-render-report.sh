@@ -3,7 +3,8 @@
 set -e
 set -x
 
-sed -i "s/workspaces_container_ip/$workspaces_container_ip/" kasmvnc.nginx
+sed "s/workspaces_container_ip/$workspaces_container_ip/" \
+  kasmvnc.nginx.template > .build/kasmvnc.nginx
 docker build -t kasmvnc-functional-test .
 if [ -n "$CI" ]; then
   docker_group=2375

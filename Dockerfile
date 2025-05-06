@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y nginx ssl-cert curl
 RUN apt-get update && apt-get install -y xsel xvfb
 RUN apt-get update && apt-get install -y python3-xvfbwrapper
 
-COPY kasmvnc.nginx /etc/nginx/sites-available/kasmvnc
+COPY .build/kasmvnc.nginx /etc/nginx/sites-available/kasmvnc
 RUN ln -s /etc/nginx/sites-available/kasmvnc /etc/nginx/sites-enabled/
 
 RUN addgroup --system nginx
