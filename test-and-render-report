@@ -282,8 +282,8 @@ with Xvfb() as xvfb:
   test_container = find_container_for_image(KASMVNC_IMAGE_TO_TEST_ON)
   disable_menu_animation()
   test_xfce_running(test_container)
-  # test_seamless_clipboard_copy_from_host()
-  # test_seamless_clipboard_copy_from_container()
+  test_seamless_clipboard_copy_from_host()
+  test_seamless_clipboard_copy_from_container()
   test_window_resize()
 
   os.makedirs(outdir, exist_ok=True)
