@@ -248,6 +248,7 @@ def render_report():
 
 import os
 import subprocess
+import traceback
 import time
 from jinja2 import Template
 
